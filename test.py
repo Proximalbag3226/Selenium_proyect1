@@ -1,8 +1,7 @@
 from config.navigator import Navigation
 from config.navigator import ChromeWindow as cw
 from config.constants import *
-from config.navigator import *
-
+from config.navigator import WordDocumentCreator
 
 def news():
     while True:    
@@ -29,10 +28,17 @@ def news():
             option == dof
             
         with Navigation() as nv:
-            nv.get_url(option)
-            #nv.latest_news('//*[@id="header-ljn"]/div[2]/a')
-            #new_window = cw()
-            #new_window.new_page(universal)
-            break
+            nv.get_url(jornada)
+            nv.latest_news('//*[@id="header-ljn"]/div[2]/a')
+            nv.title_news('.nota-titulo.mb-1 a')
+        # Ejemplo de uso
+            word_creator = WordDocumentCreator("mi_documento_clase.docx")
+
+            word_creator.add_heading("Título del Documento", level=1)
+            word_creator.add_paragraph("Este es un párrafo en mi documento Word.")
+
+            word_creator.save_document()
+
+        break
 
 news()

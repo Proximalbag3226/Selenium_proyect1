@@ -4,7 +4,6 @@ import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from config import constants
 from docx import Document
 
 #Create a class that will be used to manage the functions of the chrome windows
@@ -19,9 +18,9 @@ class ChromeWindow(webdriver.Chrome):
         self.execute_script(f"window.open('{page}');")
         self.switch_to.window(self.window_handles[1])
 
+#We created a class to use the webdriver options to navigate the page of the paper news
 class Navigation(webdriver.Chrome):
-    
-    def __init__(self, teardown=False):
+    def __init__(self,teardown=False):
         self.teardown = teardown
         super(Navigation, self).__init__()
         self.maximize_window()
@@ -33,18 +32,26 @@ class Navigation(webdriver.Chrome):
     
     def return_page(self):
         self.back()
-    def get_url(self):
-        self.get(constants.jornada)
+    def get_url(self, page):
+        try:
+            self.get(page)
+        except Exception as e:
+            print(f"Can't access page {e}")
         self.maximize_window()
     
-    def latest_news(self):
-        news_bttn = self.find_element_by_xpath('//*[@id="header-ljn"]/div[2]/a')
+    def latest_news(self, xpath):
+        news_bttn = self.find_element_by_xpath(xpath)
         print(news_bttn.text)
         news_bttn.click()
-    
-    def title_news(self):
-        title = self.find_element_by_xpath('')
         
+    def title_news(self, class_name):
+        try:
+            elements = self.find_elements_by_css_selector(class_name)
+            titles = [element.text for element in elements]
+            return titles
+        except Exception as e:
+            print(f"Error: {e}")
+
 class WordDocumentCreator:
     def __init__(self, file_name):
         self.file_name = file_name
