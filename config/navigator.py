@@ -14,7 +14,7 @@ class ChromeWindow(webdriver.Chrome):
         self.maximize_window()
         self.implicitly_wait(10)
     
-    def new_page(self, page):
+    def new_page(self, page):   
         self.execute_script(f"window.open('{page}');")
         self.switch_to.window(self.window_handles[1])
 
@@ -44,10 +44,10 @@ class Navigation(webdriver.Chrome):
         print(news_bttn.text)
         news_bttn.click()
         
-    def title_news(self, class_name):
+    def title_news(self, class_name, amount):
         try:
             elements = self.find_elements_by_css_selector(class_name)
-            titles = [element.text for element in elements]
+            titles = '\n\n'.join([f"{element.text}: {element.get_attribute('href')}" for element in elements[:amount]])
             return titles
         except Exception as e:
             print(f"Error: {e}")
