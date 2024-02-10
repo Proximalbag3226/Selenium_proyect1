@@ -32,9 +32,11 @@ class Navigation(webdriver.Chrome):
     
     def return_page(self):
         self.back()
+        
     def get_url(self, page):
         try:
             self.get(page)
+            self.implicitly_wait(10)
         except Exception as e:
             print(f"Can't access page {e}")
         self.maximize_window()
@@ -48,6 +50,7 @@ class Navigation(webdriver.Chrome):
         try:
             elements = self.find_elements_by_css_selector(class_name)
             titles = '\n\n'.join([f"{element.text}: {element.get_attribute('href')}" for element in elements[:amount]])
+            print(titles)
             return titles
         except Exception as e:
             print(f"Error: {e}")
