@@ -1,4 +1,6 @@
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.keys import Keys
 import time
 from selenium.webdriver.common.by import By
@@ -6,24 +8,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from docx import Document
 
-#Create a class that will be used to manage the functions of the chrome windows
-class ChromeWindow(webdriver.Chrome):
-    def __init__(self, teardown=False):
-        self.teardown = teardown
-        super(ChromeWindow, self).__init__()
-        self.maximize_window()
-        self.implicitly_wait(10)
-    
-    def new_page(self, page):   
-        self.execute_script(f"window.open('{page}');")
-        self.switch_to.window(self.window_handles[1])
-
 #We created a class to use the webdriver options to navigate the page of the paper news
-class Navigation(webdriver.Chrome):
+class Navigation(webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))):
     def __init__(self,teardown=False):
         self.teardown = teardown
         super(Navigation, self).__init__()
-        self.maximize_window()
         self.implicitly_wait(10)
     
     def __exit__(self, exc_type, exc_value, trace):
@@ -39,7 +28,6 @@ class Navigation(webdriver.Chrome):
             self.implicitly_wait(10)
         except Exception as e:
             print(f"Can't access page {e}")
-        self.maximize_window()
     
     def latest_news(self, xpath):
         news_bttn = self.find_element_by_xpath(xpath)

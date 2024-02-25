@@ -30,9 +30,9 @@ def news():
             
         with Navigation() as nv:
             nv.get_url(option)
-            #nv.latest_news('//*[@id="header-ljn"]/div[2]/a')
-            #new_window = cw()
-            #new_window.new_page(universal)
+            nv.latest_news('//*[@id="header-ljn"]/div[2]/a')
+            new_window = cw()
+            new_window.new_page(universal)
             break
 
 news()
