@@ -12,7 +12,6 @@ class Navigation():
         self.teardown = teardown
         self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
         self.driver.maximize_window()
-        super(Navigation, self).__init__()
         self.driver.implicitly_wait(10)
         
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -20,10 +19,13 @@ class Navigation():
             self.quit()
     
     def get_url_navigator(self, url):
-        self.driver.get(url)
-        time.sleep(5)
-        print(self.driver.title)
-    
+        try:
+            self.driver.get(url)
+            time.sleep(7)
+        
+        except Exception as e:
+            print(f"Error {e}")
+      
     def latest_news(self, xpath):
         news_bttn = self.driver.find_element(By.XPATH, xpath)
         news_bttn.click()
@@ -37,9 +39,28 @@ class Navigation():
             return titles
         except Exception as e:
             print(f"Error: {e}")
+            
+    def get_img(self, amount_img, class_img):
+        links = self.driver.find_elements(By.XPATH, f'.//img[@class = "{class_img}"]')              
+        
+        for i, link in enumerate(links[:amount_img]):
+            img_link = link.get_attribute('src')
+            try:
+                response = requests.get(img_link)
+        
+                if response == 200:
+                    with open(f"{self.img_name}{i}.jpg", "wb") as file:
+                        file.write(response.content)
+                    print(f"images downloaded successfully")
+                else:
+                    print(f"And error has ocurred. Status code: {response.status}")
+            except Exception as e:
+                print(f"Erro in the download request {e}")
     
 class WordDocumentCreator:
     def __init__(self, file_name):
+        if type(file_name) != str:
+            raise ValueError("The file name must be a string")
         self.file_name = file_name
         self.doc = Document()
         
@@ -50,33 +71,43 @@ class WordDocumentCreator:
         self.doc.add_heading(text, level = level)
         
     def save_document(self):
-        self.doc.save(self.file_name)
-        print(f"Word document {self.file_name} created and save whit success")
-
-class image_management:
-    def __init__(self, img_name):
+        try:
+            self.doc.save(self.file_name)
+            print(f"Word document {self.file_name} created and save whit success")
+        except Exception as e:
+            print(f"Error: {e}")
+class image_management(Navigation):
+    def __init__(self, driver, img_name):
+        if type(img_name) != str:
+            raise ValueError("The image name must be a string")
+        super().__init__()  # Llama al método __init__ de la clase padre
         self.img_name = img_name
-        self.driver = self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-        
-    def get_url(self, amount_img, class_img):
-        img = self.driver.find_elements(By.CLASS_NAME, class_img)
-        for images in img[:amount_img]:            
-            link = images.get_attribute('src')
-        return link
-    
-    def request_managment(self, link):
-        news_img = requests.get(link)
-        if news_img.status_code == 200:
-            print(link)
-            i += 1
-            Image_name = "Img" + str(i) + '.jpg'
-            with open(Image_name, 'wb') as img:
-                img.write(news_img.content) 
-                
-hola = Navigation()
-hola.get_url_navigator(jornada)
-hola.latest_news(xpath_jornada)
-hola.title_news(title_jornada, 5)
+        self.driver = driver
 
+    def get_img(self, amount_img, class_img):
+        links = self.driver.find_elements(By.XPATH, f'.//img[@class = "{class_img}"]')              
+        
+        for i, link in enumerate(links[:1+amount_img]):
+            img_link = link.get_attribute('src')
+            try:
+                response = requests.get(img_link)
+        
+                if response.status_code == 200:
+                    with open(f"{self.img_name}{i+1}.jpg", "wb") as file:
+                        file.write(response.content)
+                    print(f"images downloaded successfully")
+                else:
+                    print(f"And error has ocurred. Status code: {response.status}")
+            except Exception as e:
+                print(f"Erro in the download request {e}")       
+                                
+hola = Navigation()
+hola2 = image_management(hola.driver, "Image1")     
+hola.get_url_navigator(jornada["url"])
+hola.latest_news(jornada["xpath"])
+hola.title_news(jornada["title"], 3)
+time.sleep(5)
+link1 = hola2.get_img(3, jornada["img"])
+time.sleep(2)
         
         

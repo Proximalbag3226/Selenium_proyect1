@@ -27,11 +27,11 @@ def news():
             with Navigation() as nv:
                 nv.get_url(option)
                 nv.latest_news('//*[@id="header-ljn"]/div[2]/a')
-                t1 = nv.title_news(title_jornada, amount)
+                t1 = nv.title_news(jornada["title"], amount)
         elif newspaper == "2":
             option = universal
             nv.get_url(option)
-            t1 = nv.title_news(title_universal, amount)
+            t1 = nv.title_news(universal["title"], amount)
         elif newspaper == "3":
             option == economista
         elif newspaper == "4":
