@@ -51,11 +51,11 @@ class Navigation():
                 if response == 200:
                     with open(f"{self.img_name}{i}.jpg", "wb") as file:
                         file.write(response.content)
-                    print(f"images downloaded successfully")
+                    print(f"Images downloaded successfully")
                 else:
                     print(f"And error has ocurred. Status code: {response.status}")
             except Exception as e:
-                print(f"Erro in the download request {e}")
+                print(f"Error in the download request {e}")
     
 class WordDocumentCreator:
     def __init__(self, file_name):
@@ -76,6 +76,7 @@ class WordDocumentCreator:
             print(f"Word document {self.file_name} created and save whit success")
         except Exception as e:
             print(f"Error: {e}")
+            
 class image_management(Navigation):
     def __init__(self, driver, img_name):
         if type(img_name) != str:
@@ -95,11 +96,11 @@ class image_management(Navigation):
                 if response.status_code == 200:
                     with open(f"{self.img_name}{i+1}.jpg", "wb") as file:
                         file.write(response.content)
-                    print(f"images downloaded successfully")
+                    print(f"Images downloaded successfully")
                 else:
                     print(f"And error has ocurred. Status code: {response.status}")
             except Exception as e:
-                print(f"Erro in the download request {e}")       
+                print(f"Error in the download request {e}")       
                                 
 hola = Navigation()
 hola2 = image_management(hola.driver, "Image1")     
