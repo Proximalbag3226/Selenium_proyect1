@@ -2,7 +2,7 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
-from config.constants import *
+from constants import *
 import time
 from docx import Document
 import requests
@@ -72,7 +72,7 @@ class WordDocumentCreator:
         
     def save_document(self):
         try:
-            self.doc.save(self.file_name)
+            self.doc.save(self.file_name + ".docx")
             print(f"Word document {self.file_name} created and save whit success")
         except Exception as e:
             print(f"Error: {e}")
@@ -81,7 +81,7 @@ class image_management(Navigation):
     def __init__(self, driver, img_name):
         if type(img_name) != str:
             raise ValueError("The image name must be a string")
-        super().__init__()  # Llama al método __init__ de la clase padre
+        super().__init__()
         self.img_name = img_name
         self.driver = driver
 
@@ -102,13 +102,17 @@ class image_management(Navigation):
             except Exception as e:
                 print(f"Error in the download request {e}")       
                                 
-hola = Navigation()
-hola2 = image_management(hola.driver, "Image1")     
-hola.get_url_navigator(jornada["url"])
-hola.latest_news(jornada["xpath"])
-hola.title_news(jornada["title"], 3)
+nav = Navigation()
+#nav2 = image_management(nav.driver, "Image1")     
+nav.get_url_navigator(dof["url"])
+#nav.latest_news(universal["xpath"])
+titles = nav.title_news(dof["title"], 1)
 time.sleep(5)
-link1 = hola2.get_img(3, jornada["img"])
+word = WordDocumentCreator("Word1")
+word.add_heading(f"News from dof")
+word.add_paragraph("hola")
+word.save_document()
+#link1 = nav2.get_img(3, jornada["img"])
 time.sleep(2)
         
         
