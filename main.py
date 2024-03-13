@@ -1,5 +1,6 @@
 from config.constants import *
 from config.test3 import *
+import re
 
 #Create a function that realizes the actions of the module Navigation but inclides the user interface in the console
 def news():
@@ -27,6 +28,15 @@ def news():
         else:
             print("Please enter a minor amount")            
             continue
+        
+        word_name = input("Please enter a name of the word document for the news ").strip()
+        no_permitted = re.compile(r'[!@#$%^&*()<>?/\|}{~:]')
+        if bool(no_permitted.search(word_name)) == True:
+            print("The name of the word document can't have special caracters")
+            continue
+        else:
+            print("Ok correct name")
+            name = word_name
         
         image_option = input("Do you want to download the images from the papernews? (y/n)").strip()
         if image_option == "y" or image_option == "n":
@@ -56,6 +66,7 @@ def news():
             nav2 = image_management(nav.driver, "Image")     
             nav2.get_img(amount, option["img"])
             time.sleep(4)
+        elif image_option == "y" and option == "4":
             pass
         else:
             pass
@@ -64,6 +75,19 @@ def news():
         nav.latest_news(option["xpath"])
         nav.title_news(option["title"], amount)
         time.sleep(5)
+        word = WordDocumentCreator(name)
+        word.add_heading(f"The news of the day from {option} is in here")
+        word.add_paragraph(titles)
+        word.save_document()
+        time.sleep(3)
         
-        break
+        repeat = input("Do you want to try again? (y/n)").strip()
+        if repeat == "y":
+            news()
+        elif repeat == "n":
+            print("Have a nice day")
+            break
+        else:
+            print("Select a correct option")
+            pass
 news()
